@@ -8,4 +8,5 @@ Hoping this is ok alongside the assumption:
 directory as the application (PHP) files.'
 
 ## To run
+composer install
 php -S localhost:8000 -t public
