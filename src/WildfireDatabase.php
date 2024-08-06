@@ -28,7 +28,7 @@ class WildfireDatabase
 
         $forests = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $forests[] = $row['NWCG_REPORTING_UNIT_NAME'];
+            $forests[] = new Forest($row['NWCG_REPORTING_UNIT_NAME']);
         }
 
         return $forests;

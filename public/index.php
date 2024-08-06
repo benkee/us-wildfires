@@ -42,10 +42,10 @@ try {
     </section>
     <section>
         <ul>
-            <?php foreach ($forests as $forestName): ?>
+            <?php foreach ($forests as $forest): ?>
                 <li>
-                    <a href="detail.php?forest=<?= urlencode($forestName) ?>">
-                        <?= $forestName ?>
+                    <a href="detail.php?forest=<?= urlencode($forest->name) ?>">
+                        <?= $forest->name ?>
                     </a>
                 </li>
             <?php endforeach; ?>
