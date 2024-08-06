@@ -1,4 +1,9 @@
 <?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use src\WildfireDatabase;
+
 $forests = [];
 $resultsPerPage = 30;
 $totalResults = 0;
@@ -9,22 +14,9 @@ $searchValue = ($_GET['query'] ?? '');
 $searchQuery = '%' . $searchValue . '%';
 
 try {
-    $db = new PDO('sqlite:../database/us-wildfires.sqlite');
-
-    $countStmt = $db->prepare("SELECT COUNT(DISTINCT NWCG_REPORTING_UNIT_NAME) FROM fires WHERE NWCG_REPORTING_UNIT_NAME LIKE :query");
-    $countStmt->bindParam(':query', $searchQuery);
-    $countStmt->execute();
-    $totalResults = $countStmt->fetchColumn();
-
-    $stmt = $db->prepare("SELECT DISTINCT NWCG_REPORTING_UNIT_NAME FROM fires WHERE NWCG_REPORTING_UNIT_NAME LIKE :query LIMIT :start, :limit");
-    $stmt->bindParam(':query', $searchQuery);
-    $stmt->bindParam(':start', $limitStartNumber, PDO::PARAM_INT);
-    $stmt->bindParam(':limit', $resultsPerPage, PDO::PARAM_INT);
-    $stmt->execute();
-
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $forests[] = $row['NWCG_REPORTING_UNIT_NAME'];
-    }
+    $database = new WildfireDatabase();
+    $totalResults = $database->getForestCount($searchQuery);
+    $forests = $database->getForests($searchQuery, $limitStartNumber, $resultsPerPage);
 } catch (PDOException $e) {
     echo $e->getMessage();
 }
