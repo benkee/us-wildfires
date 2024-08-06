@@ -8,13 +8,19 @@ class Fire
     public string $name;
     public string $datetime;
     public string $cause;
+    public string $fire_size;
+    public string $latitude;
+    public string $longitude;
 
-    function __construct($fpa_id, $name, $date, $time, $cause)
+    function __construct($fpa_id, $name, $date, $time, $cause, $fireSize, $latitude, $longitude)
     {
         $this->fpa_id = $fpa_id;
         $this->name = $name ?? 'No Name Found';
         $this->datetime = $this->getDateTime($date, $time);
         $this->cause = $cause;
+        $this->fire_size = $fireSize;
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
     private function getDateTime($date, $time): string

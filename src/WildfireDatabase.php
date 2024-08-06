@@ -50,14 +50,14 @@ class WildfireDatabase
     {
         $fires = [];
 
-        $stmt = $this->db->prepare("SELECT FPA_ID, FIRE_NAME, DISCOVERY_DATE, DISCOVERY_TIME, STAT_CAUSE_DESCR FROM fires WHERE NWCG_REPORTING_UNIT_NAME = :query ORDER BY DISCOVERY_DATE DESC LIMIT :start, :limit");
+        $stmt = $this->db->prepare("SELECT FPA_ID, FIRE_NAME, DISCOVERY_DATE, DISCOVERY_TIME, STAT_CAUSE_DESCR, FIRE_SIZE_CLASS, LATITUDE, LONGITUDE FROM fires WHERE NWCG_REPORTING_UNIT_NAME = :query ORDER BY DISCOVERY_DATE DESC LIMIT :start, :limit");
         $stmt->bindParam(':query', $forestName);
         $stmt->bindParam(':start', $start, PDO::PARAM_INT);
         $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
         $stmt->execute();
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $fires[] = new Fire($row['FPA_ID'], $row['FIRE_NAME'], $row['DISCOVERY_DATE'], $row['DISCOVERY_TIME'], $row['STAT_CAUSE_DESCR']);
+            $fires[] = new Fire($row['FPA_ID'], $row['FIRE_NAME'], $row['DISCOVERY_DATE'], $row['DISCOVERY_TIME'], $row['STAT_CAUSE_DESCR'], $row['FIRE_SIZE_CLASS'], $row['LATITUDE'], $row['LONGITUDE']);
         }
 
         return $fires;
