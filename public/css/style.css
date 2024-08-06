@@ -3,3 +3,29 @@ body {
     max-width: 800px;
     margin: 0 auto;
 }
+
+ul li {
+    padding: 0.25rem 0;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+    padding: 0.3rem;
+    margin: 0.2rem;
+}
+
+.pagination {
+    margin: 1rem;
+}
+
+.back-button {
+    margin: 0.5rem;
+}
+
+.pagination-block {
+    margin: 1rem
+}
