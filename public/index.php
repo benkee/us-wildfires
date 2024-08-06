@@ -5,14 +5,19 @@ $totalResults = 0;
 $pageNumber = $_GET['page'] ?? 1;
 $limitStartNumber = ($pageNumber - 1) * $resultsPerPage;
 
+$searchValue = ($_GET['query'] ?? '');
+$searchQuery = '%' . $searchValue . '%';
+
 try {
     $db = new PDO('sqlite:../database/us-wildfires.sqlite');
 
-    $countStmt = $db->prepare("SELECT COUNT(DISTINCT NWCG_REPORTING_UNIT_NAME) FROM fires");
+    $countStmt = $db->prepare("SELECT COUNT(DISTINCT NWCG_REPORTING_UNIT_NAME) FROM fires WHERE NWCG_REPORTING_UNIT_NAME LIKE :query");
+    $countStmt->bindParam(':query', $searchQuery);
     $countStmt->execute();
     $totalResults = $countStmt->fetchColumn();
 
-    $stmt = $db->prepare("SELECT DISTINCT NWCG_REPORTING_UNIT_NAME FROM fires LIMIT :start, :limit");
+    $stmt = $db->prepare("SELECT DISTINCT NWCG_REPORTING_UNIT_NAME FROM fires WHERE NWCG_REPORTING_UNIT_NAME LIKE :query LIMIT :start, :limit");
+    $stmt->bindParam(':query', $searchQuery);
     $stmt->bindParam(':start', $limitStartNumber, PDO::PARAM_INT);
     $stmt->bindParam(':limit', $resultsPerPage, PDO::PARAM_INT);
     $stmt->execute();
@@ -37,6 +42,13 @@ try {
         <h1>List of Forests</h1>
     </header>
     <section>
+        <form method="get" action="">
+            <input type="text" name="query" placeholder="Search by Forests"
+                   value="<?= $_GET['query'] ?? '' ?>" aria-label="Search">
+            <input type="submit" value="Search" role="button">
+        </form>
+    </section>
+    <section>
         <ul>
             <?php foreach ($forests as $forestName): ?>
                 <li>
@@ -53,11 +65,11 @@ try {
         $prevPage = $pageNumber > 1 ? $pageNumber - 1 : 1;
         $nextPage = $pageNumber < $totalPages ? $pageNumber + 1 : $totalPages;
         ?>
-        <a class="pagination" href="?page=1">First</a>
-        <a class="pagination" href="?page=<?= $prevPage ?>">Prev</a>
+        <a class="pagination" href="?query=<?= $searchValue ?>&page=1">First</a>
+        <a class="pagination" href="?query=<?= $searchValue ?>&page=<?= $prevPage ?>">Prev</a>
         <span class="pagination current-page"><?= $pageNumber ?></span>
-        <a class="pagination" href="?page=<?= $nextPage ?>">Next</a>
-        <a class="pagination" href="?page=<?= $totalPages ?>">Last</a>
+        <a class="pagination" href="?query=<?= $searchValue ?>&page=<?= $nextPage ?>">Next</a>
+        <a class="pagination" href="?query=<?= $searchValue ?>&page=<?= $totalPages ?>">Last</a>
         <span class="pagination current-page">Total: <?= $totalPages ?></span>
     </nav>
 </main>
